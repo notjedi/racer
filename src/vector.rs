@@ -1,39 +1,59 @@
-use std::ops::{Add, Div, Mul, Neg, Sub};
+use std::{
+    fmt::Display,
+    ops::{Add, Div, Mul, Neg, Sub},
+};
 
 #[derive(Default, Debug)]
-struct Vec3(f32, f32, f32);
+pub struct Vec3(f32, f32, f32);
 
-#[allow(dead_code)]
+impl Display for Vec3 {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{} {} {}", self.0, self.1, self.2)
+    }
+}
+
 impl Vec3 {
-    fn new(x: f32, y: f32, z: f32) -> Self {
+    pub fn new(x: f32, y: f32, z: f32) -> Self {
         Vec3 { 0: x, 1: y, 2: z }
     }
 
-    fn x(&self) -> f32 {
+    pub fn x(&self) -> f32 {
         self.0
     }
 
-    fn y(&self) -> f32 {
+    pub fn y(&self) -> f32 {
         self.1
     }
 
-    fn z(&self) -> f32 {
+    pub fn z(&self) -> f32 {
         self.2
     }
 
-    fn length_squared(&self) -> f32 {
+    pub fn r(&self) -> f32 {
+        self.0
+    }
+
+    pub fn g(&self) -> f32 {
+        self.1
+    }
+
+    pub fn b(&self) -> f32 {
+        self.2
+    }
+
+    pub fn length_squared(&self) -> f32 {
         self.0.powi(2) + self.1.powi(2) + self.2.powi(2)
     }
 
-    fn length(&self) -> f32 {
+    pub fn length(&self) -> f32 {
         self.length_squared().sqrt()
     }
 
-    fn dot(&self, other: Self) -> f32 {
+    pub fn dot(&self, other: Self) -> f32 {
         self.0 * other.0 + self.1 * other.1 + self.2 * other.2
     }
 
-    fn cross(&self, other: Self) -> Self {
+    pub fn cross(&self, other: Self) -> Self {
         Self {
             0: self.1 * other.2 - self.2 * other.1,
             1: self.2 * other.0 - self.0 * other.2,
@@ -41,7 +61,7 @@ impl Vec3 {
         }
     }
 
-    fn unit_vec3(&self) -> Self {
+    pub fn unit_vec3(&self) -> Self {
         self / self.length()
     }
 }
