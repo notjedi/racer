@@ -1,26 +1,57 @@
+mod ray;
 mod vector;
 
+use ray::Ray;
 use vector::Vec3;
 
-const IMAGE_WIDTH: usize = 256;
-const IMAGE_HEIGHT: usize = 256;
+const ASPECT_RATIO: f32 = 16.0 / 9.0;
+
+const IMAGE_WIDTH: usize = 400;
+const IMAGE_HEIGHT: usize = (IMAGE_WIDTH as f32 / ASPECT_RATIO) as usize;
+
+const FOCAL_LENGTH: f32 = 1.0;
+const VIEWPORT_HEIGHT: f32 = 2.0;
+const VIEWPORT_WIDTH: f32 = ASPECT_RATIO * VIEWPORT_HEIGHT;
+
+const ORIGIN: Vec3 = Vec3::new(0.0, 0.0, 0.0);
+const VERTICAL: Vec3 = Vec3::new(0.0, VIEWPORT_HEIGHT, 0.0);
+const HORIZONTAL: Vec3 = Vec3::new(VIEWPORT_WIDTH, 0.0, 0.0);
+const LOWER_LEFT: Vec3 = Vec3::new(
+    ORIGIN.x() - (VIEWPORT_WIDTH / 2.0),
+    ORIGIN.y() - (VIEWPORT_HEIGHT / 2.0),
+    ORIGIN.z() - FOCAL_LENGTH,
+);
+
+const WHITE: Vec3 = Vec3::new(1.0, 1.0, 1.0);
+const BLUE: Vec3 = Vec3::new(0.0, 0.0, 1.0);
+
+fn get_color_of_ray(ray: Ray) -> Vec3 {
+    let norm_direction = ray.direction.normalize();
+    let t = (norm_direction.y() + 1.0) * 0.5; // scale to be between 0.0 and 1.0
+    let color = WHITE * (1.0 - t) + BLUE * t;
+    color
+}
 
 fn gen_ppm_file() {
     println!("P3\n{IMAGE_WIDTH} {IMAGE_HEIGHT}\n255");
 
     for i in 0..IMAGE_HEIGHT {
         for j in 0..IMAGE_WIDTH {
-            let color = Vec3::new(
-                j as f32 / (IMAGE_WIDTH - 1) as f32,
-                i as f32 / (IMAGE_HEIGHT - 1) as f32,
-                0.25,
-            );
-            let color_scaled = &color * 255.999 as f32;
+            let x = j as f32 / (IMAGE_WIDTH - 1) as f32;
+            let y = i as f32 / (IMAGE_HEIGHT - 1) as f32;
+
+            // TODO: why sub by ORIGIN?
+            let direction = LOWER_LEFT + (HORIZONTAL * x) + (VERTICAL * y) - ORIGIN;
+            let ray = Ray::new(ORIGIN, direction);
+
+            // let color = get_color_of_ray(ray) * 255.999;
+            let color = get_color_of_ray(ray);
+            let color = color * 255.999;
             println!(
                 "{} {} {}",
-                color_scaled.r() as i32,
-                color_scaled.g() as i32,
-                color_scaled.b() as i32
+                color.r() as i32,
+                color.g() as i32,
+                color.b() as i32
             );
         }
     }

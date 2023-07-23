@@ -13,31 +13,31 @@ impl Display for Vec3 {
 }
 
 impl Vec3 {
-    pub fn new(x: f32, y: f32, z: f32) -> Self {
+    pub const fn new(x: f32, y: f32, z: f32) -> Self {
         Vec3 { 0: x, 1: y, 2: z }
     }
 
-    pub fn x(&self) -> f32 {
+    pub const fn x(&self) -> f32 {
         self.0
     }
 
-    pub fn y(&self) -> f32 {
+    pub const fn y(&self) -> f32 {
         self.1
     }
 
-    pub fn z(&self) -> f32 {
+    pub const fn z(&self) -> f32 {
         self.2
     }
 
-    pub fn r(&self) -> f32 {
+    pub const fn r(&self) -> f32 {
         self.0
     }
 
-    pub fn g(&self) -> f32 {
+    pub const fn g(&self) -> f32 {
         self.1
     }
 
-    pub fn b(&self) -> f32 {
+    pub const fn b(&self) -> f32 {
         self.2
     }
 
@@ -61,12 +61,36 @@ impl Vec3 {
         }
     }
 
-    pub fn unit_vec3(&self) -> Self {
+    pub fn normalize(&self) -> Self {
         self / self.length()
     }
 }
 
+impl Add<f32> for Vec3 {
+    type Output = Vec3;
+
+    fn add(self, rhs: f32) -> Self::Output {
+        Vec3 {
+            0: self.0 + rhs,
+            1: self.1 + rhs,
+            2: self.2 + rhs,
+        }
+    }
+}
+
 impl Add for &Vec3 {
+    type Output = Vec3;
+
+    fn add(self, rhs: Self) -> Self::Output {
+        Vec3 {
+            0: self.0 + rhs.0,
+            1: self.1 + rhs.1,
+            2: self.2 + rhs.2,
+        }
+    }
+}
+
+impl Add for Vec3 {
     type Output = Vec3;
 
     fn add(self, rhs: Self) -> Self::Output {
@@ -90,6 +114,18 @@ impl Sub for &Vec3 {
     }
 }
 
+impl Sub for Vec3 {
+    type Output = Vec3;
+
+    fn sub(self, rhs: Self) -> Self::Output {
+        Vec3 {
+            0: self.0 - rhs.0,
+            1: self.1 - rhs.1,
+            2: self.2 - rhs.2,
+        }
+    }
+}
+
 impl Mul<f32> for &Vec3 {
     type Output = Vec3;
 
@@ -102,7 +138,31 @@ impl Mul<f32> for &Vec3 {
     }
 }
 
+impl Mul<f32> for Vec3 {
+    type Output = Vec3;
+
+    fn mul(self, rhs: f32) -> Self::Output {
+        Vec3 {
+            0: self.0 * rhs,
+            1: self.1 * rhs,
+            2: self.2 * rhs,
+        }
+    }
+}
+
 impl Div<f32> for &Vec3 {
+    type Output = Vec3;
+
+    fn div(self, rhs: f32) -> Self::Output {
+        Vec3 {
+            0: self.0 / rhs,
+            1: self.1 / rhs,
+            2: self.2 / rhs,
+        }
+    }
+}
+
+impl Div<f32> for Vec3 {
     type Output = Vec3;
 
     fn div(self, rhs: f32) -> Self::Output {
