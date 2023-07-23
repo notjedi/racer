@@ -1,6 +1,9 @@
+mod vector;
+
 const IMAGE_WIDTH: usize = 256;
 const IMAGE_HEIGHT: usize = 256;
 
+#[allow(dead_code)]
 fn gen_ppm_file() {
     println!("P3\n{IMAGE_WIDTH} {IMAGE_HEIGHT}\n255");
 
@@ -20,5 +23,5 @@ fn gen_ppm_file() {
 }
 
 fn main() {
-    gen_ppm_file();
+    // gen_ppm_file();
 }
