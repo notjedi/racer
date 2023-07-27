@@ -22,10 +22,26 @@ const LOWER_LEFT: Vec3 = Vec3::new(
     ORIGIN.z() - FOCAL_LENGTH,
 );
 
+const CIRCLE_CENTER: Vec3 = Vec3::new(0.0, 0.0, -1.0);
+const CIRCLE_RADIUS: f32 = 0.5;
+
 const WHITE: Vec3 = Vec3::new(1.0, 1.0, 1.0);
 const BLUE: Vec3 = Vec3::new(0.0, 0.0, 1.0);
+const RED: Vec3 = Vec3::new(1.0, 0.0, 0.0);
+
+fn hit_sphere(center: &Vec3, radius: f32, ray: &Ray) -> bool {
+    let origin_centered = &ray.origin - center;
+    let a = ray.direction.dot(&ray.direction);
+    let b = ray.direction.dot(&origin_centered) * 2.0;
+    let c = -(radius * radius) + origin_centered.dot(&origin_centered);
+    let discriminant = (b * b) - (a * c * 4.0);
+    return discriminant > 0.0;
+}
 
 fn get_color_of_ray(ray: Ray) -> Vec3 {
+    if hit_sphere(&CIRCLE_CENTER, CIRCLE_RADIUS, &ray) {
+        return RED;
+    }
     let norm_direction = ray.direction.normalize();
     let t = (norm_direction.y() + 1.0) * 0.5; // scale to be between 0.0 and 1.0
     let color = WHITE * (1.0 - t) + BLUE * t;

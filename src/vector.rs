@@ -49,11 +49,11 @@ impl Vec3 {
         self.length_squared().sqrt()
     }
 
-    pub fn dot(&self, other: Self) -> f32 {
+    pub fn dot(&self, other: &Self) -> f32 {
         self.0 * other.0 + self.1 * other.1 + self.2 * other.2
     }
 
-    pub fn cross(&self, other: Self) -> Self {
+    pub fn cross(&self, other: &Self) -> Self {
         Self {
             0: self.1 * other.2 - self.2 * other.1,
             1: self.2 * other.0 - self.0 * other.2,
@@ -67,6 +67,18 @@ impl Vec3 {
 }
 
 impl Add<f32> for Vec3 {
+    type Output = Vec3;
+
+    fn add(self, rhs: f32) -> Self::Output {
+        Vec3 {
+            0: self.0 + rhs,
+            1: self.1 + rhs,
+            2: self.2 + rhs,
+        }
+    }
+}
+
+impl Add<f32> for &Vec3 {
     type Output = Vec3;
 
     fn add(self, rhs: f32) -> Self::Output {
@@ -146,6 +158,18 @@ impl Mul<f32> for Vec3 {
             0: self.0 * rhs,
             1: self.1 * rhs,
             2: self.2 * rhs,
+        }
+    }
+}
+
+impl Div for &Vec3 {
+    type Output = Vec3;
+
+    fn div(self, rhs: Self) -> Self::Output {
+        Vec3 {
+            0: self.0 / rhs.0,
+            1: self.1 / rhs.1,
+            2: self.2 / rhs.2,
         }
     }
 }
