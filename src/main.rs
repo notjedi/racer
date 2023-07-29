@@ -1,3 +1,8 @@
+use std::{
+    fs::File,
+    io::{BufWriter, Write},
+};
+
 mod ray;
 mod vector;
 
@@ -35,7 +40,7 @@ fn hit_sphere(center: &Vec3, radius: f32, ray: &Ray) -> bool {
     let b = ray.direction.dot(&origin_centered) * 2.0;
     let c = -(radius * radius) + origin_centered.dot(&origin_centered);
     let discriminant = (b * b) - (a * c * 4.0);
-    return discriminant > 0.0;
+    discriminant > 0.0
 }
 
 fn get_color_of_ray(ray: Ray) -> Vec3 {
@@ -44,12 +49,16 @@ fn get_color_of_ray(ray: Ray) -> Vec3 {
     }
     let norm_direction = ray.direction.normalize();
     let t = (norm_direction.y() + 1.0) * 0.5; // scale to be between 0.0 and 1.0
-    let color = WHITE * (1.0 - t) + BLUE * t;
-    color
+    WHITE * (1.0 - t) + BLUE * t
 }
 
 fn gen_ppm_file() {
-    println!("P3\n{IMAGE_WIDTH} {IMAGE_HEIGHT}\n255");
+    let file = File::create("img.ppm").unwrap();
+    let mut stream = BufWriter::new(file);
+
+    stream
+        .write_all(format!("P3\n{IMAGE_WIDTH} {IMAGE_HEIGHT}\n255\n").as_bytes())
+        .unwrap();
 
     for i in 0..IMAGE_HEIGHT {
         for j in 0..IMAGE_WIDTH {
@@ -63,14 +72,20 @@ fn gen_ppm_file() {
             // let color = get_color_of_ray(ray) * 255.999;
             let color = get_color_of_ray(ray);
             let color = color * 255.999;
-            println!(
-                "{} {} {}",
-                color.r() as i32,
-                color.g() as i32,
-                color.b() as i32
-            );
+            stream
+                .write_all(
+                    format!(
+                        "{} {} {}\n",
+                        color.r() as i32,
+                        color.g() as i32,
+                        color.b() as i32
+                    )
+                    .as_bytes(),
+                )
+                .unwrap();
         }
     }
+    stream.flush().unwrap();
 }
 
 fn main() {
