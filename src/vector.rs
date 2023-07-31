@@ -3,7 +3,7 @@ use std::{
     ops::{Add, Div, Mul, Neg, Sub},
 };
 
-#[derive(Default, Debug)]
+#[derive(Clone, Default, Debug)]
 pub struct Vec3(f32, f32, f32);
 
 impl Display for Vec3 {
