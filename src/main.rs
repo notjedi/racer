@@ -47,10 +47,7 @@ fn get_color_of_ray(ray: &Ray, objects: &Objects) -> Vec3 {
 fn gen_ppm_file() {
     let mut objects = Objects::new();
     objects.add(Box::new(Sphere::new(Vec3::from((0.0, 0.0, -1.0)), 0.5)));
-    objects.add(Box::new(Sphere::new(
-        Vec3::from((0.0, -100.5, -1.0)),
-        100.0,
-    )));
+    objects.add(Box::new(Sphere::new(Vec3::from((0.0, -50.0, -1.0)), 100.0)));
 
     let file = File::create("img.ppm").unwrap();
     let mut stream = BufWriter::new(file);

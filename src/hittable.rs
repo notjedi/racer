@@ -1,5 +1,9 @@
 use crate::{ray::Ray, vector::Vec3};
 
+pub trait Hittable {
+    fn hit(&self, ray: &Ray, t_min: f32, t_max: f32) -> Option<HitRecord>;
+}
+
 pub struct HitRecord {
     pub point: Vec3,
     pub normal: Vec3,
@@ -16,40 +20,6 @@ impl HitRecord {
             front_face,
         }
     }
-}
-
-pub struct Objects {
-    objects: Vec<Box<dyn Hittable>>,
-}
-
-impl Objects {
-    pub fn new() -> Self {
-        Self {
-            objects: Vec::new(),
-        }
-    }
-
-    pub fn add(&mut self, object: Box<dyn Hittable>) {
-        self.objects.push(object);
-    }
-
-    pub fn hit(&self, ray: &Ray, t_min: f32, t_max: f32) -> Option<HitRecord> {
-        let mut closest = t_max;
-        let mut hit_record = None;
-
-        self.objects.iter().for_each(|object| {
-            if let Some(hit) = object.hit(ray, t_min, closest) {
-                closest = hit.t;
-                hit_record = Some(hit);
-            }
-        });
-
-        hit_record
-    }
-}
-
-pub trait Hittable {
-    fn hit(&self, ray: &Ray, t_min: f32, t_max: f32) -> Option<HitRecord>;
 }
 
 pub struct Sphere {
@@ -96,5 +66,35 @@ impl Hittable for Sphere {
             }
             None => None,
         }
+    }
+}
+
+pub struct Objects {
+    objects: Vec<Box<dyn Hittable>>,
+}
+
+impl Objects {
+    pub fn new() -> Self {
+        Self {
+            objects: Vec::new(),
+        }
+    }
+
+    pub fn add(&mut self, object: Box<dyn Hittable>) {
+        self.objects.push(object);
+    }
+
+    pub fn hit(&self, ray: &Ray, t_min: f32, t_max: f32) -> Option<HitRecord> {
+        let mut closest = t_max;
+        let mut hit_record = None;
+
+        self.objects.iter().for_each(|object| {
+            if let Some(hit) = object.hit(ray, t_min, closest) {
+                closest = hit.t;
+                hit_record = Some(hit);
+            }
+        });
+
+        hit_record
     }
 }
